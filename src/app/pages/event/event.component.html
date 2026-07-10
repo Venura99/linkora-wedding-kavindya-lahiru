@@ -1,0 +1,674 @@
+<!-- ══════════════════════════════════════════════════════════
+     THEME — AFTERGLOW · A CINEMATIC LOVE LETTER
+     A horizon develops like film. The sun rises. A new chapter begins.
+     Palette: Ink Black · Dusk Plum · Ember Coral · Sun Gold · Cream Silk
+     ══════════════════════════════════════════════════════════ -->
+
+<!-- ░░ LOADING STATE ░░ -->
+<ng-container *ngIf="!event">
+  <div class="full-loader">
+    <div class="fl-ring-wrap" aria-hidden="true">
+      <svg class="fl-deco-svg" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Horizon ring -->
+        <circle cx="60" cy="60" r="52" stroke="rgba(245,237,225,0.12)" stroke-width="0.6"/>
+        <circle cx="60" cy="60" r="42" stroke="rgba(255,184,107,0.25)" stroke-width="0.6" stroke-dasharray="3 6"/>
+        <circle cx="60" cy="60" r="32" stroke="rgba(255,107,91,0.5)"  stroke-width="0.8" class="fl-ring-spin"/>
+        <!-- Sun -->
+        <circle cx="60" cy="60" r="14" fill="rgba(255,184,107,0.18)" stroke="rgba(255,184,107,0.6)" stroke-width="0.8"/>
+        <circle cx="60" cy="60" r="5"  fill="rgba(255,184,107,0.85)" class="fl-pulse-dot"/>
+        <!-- Horizon line -->
+        <line x1="6" y1="60" x2="114" y2="60" stroke="rgba(245,237,225,0.5)" stroke-width="0.6"/>
+        <!-- Cardinal sparks -->
+        <circle r="2" fill="rgba(255,107,91,0.9)" class="fl-spark fl-spark-1"/>
+        <circle r="2" fill="rgba(255,184,107,0.9)" class="fl-spark fl-spark-2"/>
+        <circle r="2" fill="rgba(245,237,225,0.9)" class="fl-spark fl-spark-3"/>
+        <circle r="2" fill="rgba(255,107,91,0.9)" class="fl-spark fl-spark-4"/>
+      </svg>
+    </div>
+    <p class="fl-text">Developing the frame…</p>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="event">
+
+  <!-- ░░ MUSIC ░░ -->
+  <audio #bgMusic loop>
+    <source src="/music/romantic.mp3" type="audio/mp3">
+  </audio>
+  <button class="music-btn"
+          [class.music-on]="isPlaying"
+          (click)="toggleMusic(bgMusic)"
+          aria-label="Toggle music">
+    <span class="music-icon">{{ isPlaying ? '⏸' : '♪' }}</span>
+    <span class="music-ring" *ngIf="isPlaying" aria-hidden="true"></span>
+  </button>
+
+  <!-- ░░ FLOATING EMBERS ░░ -->
+  <div class="petal-layer" aria-hidden="true">
+    <div *ngFor="let h of hearts; trackBy: trackHeart"
+         class="petal"
+         [style.left.%]="h.x"
+         [style.animation-duration.s]="h.duration"
+         [style.animation-delay.s]="h.delay"
+         [style.width.px]="h.size"
+         [style.height.px]="h.size"
+         [attr.data-color]="h.colorIdx">
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════
+       OPENING SCENE — DUSK SKY · HORIZON · RISING SUN
+       Tap to "develop" the frame and reveal the invitation
+       ══════════════════════════════════════════════════════ -->
+  <div class="curtain-scene"
+       id="envelopeScene"
+       (click)="openEnvelope(bgMusic)">
+
+    <!-- Sky gradient + stars -->
+    <div class="cs-backdrop" aria-hidden="true">
+      <div class="csb-sky"></div>
+      <div class="csb-stars">
+        <span class="csb-star" *ngFor="let s of [].constructor(36); let i = index"
+              [style.top.%]="(i * 7) % 38"
+              [style.left.%]="(i * 13) % 100"
+              [style.animation-delay.s]="(i % 7) * 0.4"></span>
+      </div>
+      <!-- Cinematic letterbox bars -->
+      <div class="csb-bar csb-bar-top"></div>
+      <div class="csb-bar csb-bar-bottom"></div>
+    </div>
+
+    <!-- Horizon line that draws across -->
+    <div class="cs-horizon" aria-hidden="true">
+      <span class="csh-line"></span>
+    </div>
+
+    <!-- Rising sun -->
+    <div class="cs-sun" aria-hidden="true">
+      <div class="css-disc"></div>
+      <div class="css-glow"></div>
+    </div>
+
+    <!-- Stage content -->
+    <div class="cs-stage-content">
+      <p class="csc-eyebrow">A Cinematic Love Letter</p>
+
+      <div class="csc-seal" aria-hidden="true">
+        <svg viewBox="0 0 60 60" width="60" height="60">
+          <circle cx="30" cy="30" r="26" fill="none" stroke="rgba(245,237,225,0.3)" stroke-width="0.6"/>
+          <circle cx="30" cy="30" r="20" fill="none" stroke="rgba(255,184,107,0.5)" stroke-width="0.6" stroke-dasharray="2 4"/>
+          <circle cx="30" cy="30" r="12" fill="rgba(10,10,15,0.6)" stroke="rgba(255,107,91,0.6)" stroke-width="0.8"/>
+          <text x="30" y="35" text-anchor="middle"
+                font-family="'Fraunces','Cormorant Garamond',Georgia,serif"
+                font-style="italic" font-size="16"
+                fill="rgba(255,184,107,0.95)">&amp;</text>
+        </svg>
+      </div>
+
+      <h1 class="csc-title">Wedding Invitation</h1>
+      <p class="csc-subtitle">A new chapter begins at dusk</p>
+
+      <div class="csc-divider" aria-hidden="true">
+        <span class="cscd-line"></span>
+        <span class="cscd-diamond">✦</span>
+        <span class="cscd-line"></span>
+      </div>
+
+      <p class="csc-hint" (click)="openEnvelope(bgMusic)">
+        <span class="csch-bracket">[ </span>
+        tap to develop
+        <span class="csch-bracket"> ]</span>
+      </p>
+    </div>
+
+    <!-- Cream/ember flare overlay (replaces film burn) -->
+    <div class="curtain-flash" id="filmBurn" aria-hidden="true"></div>
+
+  </div><!-- end opening scene -->
+
+
+  <!-- ══════════════════════════════════════════════════════
+       REVEAL CONTENT
+       ══════════════════════════════════════════════════════ -->
+  <div class="golden-reveal" id="letterReveal">
+
+    <!-- ════════════════════
+         HERO — NAMES & DATE
+         ════════════════════ -->
+    <section class="gr-hero">
+
+      <!-- Background slideshow -->
+      <div class="gh-bg" aria-hidden="true">
+        <div *ngFor="let slide of bgSlides; let i = index"
+             class="ghb-slide"
+             [class.active]="isBgActive(i)"
+             [style.background-image]="'url(' + slide + ')'">
+        </div>
+        <div class="ghb-overlay"></div>
+        <div class="ghb-vignette"></div>
+        <!-- Editorial top bar -->
+        <div class="ghb-topbar">
+          <span class="ghbtb-tag">Reel 01 · 35mm</span>
+          <span class="ghbtb-tag ghbtb-mid">A · &amp; · M</span>
+          <span class="ghbtb-tag">N° 0919</span>
+        </div>
+      </div>
+
+      <div class="gh-content upgraded-hero">
+        <p class="gh-eyebrow">Together with their families</p>
+
+        <div class="gh-names">
+          <h1 class="ghn-name ghn-groom">
+            <span *ngFor="let ch of splitLetters(displayGroom); let i = index"
+                  class="ghnl"
+                  [style.animation-delay.s]="0.1 + i * 0.06">{{ ch === ' ' ? '\u00A0' : ch }}</span>
+          </h1>
+
+          <div class="ghn-and">
+            <span class="ghn-line"></span>
+            <span class="ghn-amp">&amp;</span>
+            <span class="ghn-line"></span>
+          </div>
+
+          <h1 class="ghn-name ghn-bride">
+            <span *ngFor="let ch of splitLetters(displayBride); let i = index"
+                  class="ghnl"
+                  [style.animation-delay.s]="0.6 + i * 0.06">{{ ch === ' ' ? '\u00A0' : ch }}</span>
+          </h1>
+        </div>
+
+        <!-- DATE — perforated ticket stub -->
+        <div class="gh-date-badge">
+          <span class="ghdb-rule ghdb-rule-l"></span>
+          <div class="ghdb-inner">
+            <span class="ghdb-day">{{ event.date | date:'d' }}</span>
+            <span class="ghdb-sep">·</span>
+            <span class="ghdb-month-year">{{ event.date | date:'MMMM yyyy' }}</span>
+          </div>
+          <span class="ghdb-rule ghdb-rule-r"></span>
+        </div>
+
+        <p class="gh-venue">{{ event.location }}</p>
+
+        <!-- PARENTS -->
+        <div *ngIf="event.parents" class="gh-parents">
+          <div class="ghp-rule">
+            <div class="ghpr-line"></div>
+            <span class="ghpr-diamond">✦</span>
+            <div class="ghpr-line"></div>
+          </div>
+
+          <div class="ghp-content">
+            <div *ngIf="event.parents.groom" class="ghp-side">
+              <span class="ghps-label">Son of</span>
+              <span class="ghps-name">{{ event.parents.groom }}</span>
+            </div>
+            <span class="ghp-amp">&amp;</span>
+            <div *ngIf="event.parents.bride" class="ghp-side">
+              <span class="ghps-label">Daughter of</span>
+              <span class="ghps-name">{{ event.parents.bride }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Marquee (cinematic ticker) -->
+        <div class="gh-marquee" aria-hidden="true">
+          <div class="ghm-track">
+            <ng-container *ngFor="let _ of [].constructor(2)">
+              <span class="ghm-item">{{ event.date | date:'d MMMM yyyy' }}</span>
+              <span class="ghm-dot">✦</span>
+              <span class="ghm-item">{{ event.location }}</span>
+              <span class="ghm-dot">✦</span>
+              <span class="ghm-item">Take One · Forever</span>
+              <span class="ghm-dot">✦</span>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════════
+         COUNTDOWN — SOLAR ARC
+         The sun travels across an arc until the day arrives
+         ════════════════════ -->
+    <section class="gr-section fade-up">
+      <div class="golden-card solar-card">
+        <p class="gc-eyebrow">Solar Arc</p>
+        <h2 class="gc-title">Until <em>afterglow</em></h2>
+        <p class="gc-sub">The sun crosses the horizon. When it sets — we begin.</p>
+
+        <div class="solar-arc-wrap">
+          <svg class="solar-arc" viewBox="0 0 100 60" preserveAspectRatio="xMidYMid meet">
+            <defs>
+              <linearGradient id="afArc" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0"   stop-color="#2a1a3a"/>
+                <stop offset="0.5" stop-color="#ff6b5b"/>
+                <stop offset="1"   stop-color="#ffb86b"/>
+              </linearGradient>
+              <radialGradient id="afSun" cx="0.5" cy="0.5" r="0.5">
+                <stop offset="0"   stop-color="#fff5e1"/>
+                <stop offset="0.5" stop-color="#ffb86b"/>
+                <stop offset="1"   stop-color="#ff6b5b" stop-opacity="0"/>
+              </radialGradient>
+            </defs>
+
+            <!-- horizon -->
+            <line x1="0" y1="55" x2="100" y2="55"
+                  stroke="rgba(245,237,225,0.35)" stroke-width="0.2"/>
+
+            <!-- arc path -->
+            <path d="M 5 55 A 45 45 0 0 1 95 55"
+                  fill="none" stroke="url(#afArc)"
+                  stroke-width="0.5" stroke-dasharray="3 5"/>
+
+            <!-- ticks -->
+            <line *ngFor="let i of arcTicks"
+                  [attr.x1]="tickX1(i)" [attr.y1]="tickY1(i)"
+                  [attr.x2]="tickX2(i)" [attr.y2]="tickY2(i)"
+                  stroke="rgba(245,237,225,0.45)" stroke-width="0.18"/>
+
+            <!-- Sun glow + core -->
+            <circle [attr.cx]="sunX" [attr.cy]="sunY" r="6" fill="url(#afSun)" opacity="0.85"/>
+            <circle [attr.cx]="sunX" [attr.cy]="sunY" r="2.6" fill="#ffb86b"/>
+            <circle [attr.cx]="sunX" [attr.cy]="sunY" r="1.1" fill="#fff5e1"/>
+          </svg>
+
+          <div class="solar-legend">
+            <span>Met</span>
+            <span>Today</span>
+            <span>Forever</span>
+          </div>
+        </div>
+
+        <!-- Numerals -->
+        <div class="countdown-numerals">
+          <div class="cn-cell" [class.tick]="tickDays()">
+            <div class="cn-num">{{ fDays }}</div>
+            <span class="cn-label">Days</span>
+          </div>
+          <div class="cn-sep">·</div>
+          <div class="cn-cell" [class.tick]="tickHours()">
+            <div class="cn-num">{{ fHours }}</div>
+            <span class="cn-label">Hours</span>
+          </div>
+          <div class="cn-sep">·</div>
+          <div class="cn-cell" [class.tick]="tickMinutes()">
+            <div class="cn-num">{{ fMinutes }}</div>
+            <span class="cn-label">Min</span>
+          </div>
+          <div class="cn-sep">·</div>
+          <div class="cn-cell" [class.tick]="tickSeconds()">
+            <div class="cn-num">{{ fSeconds }}</div>
+            <span class="cn-label">Sec</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Editorial divider -->
+    <div class="gr-divider fade-up" aria-hidden="true">
+      <svg viewBox="0 0 400 24" fill="none" width="100%">
+        <line x1="0"   y1="12" x2="170" y2="12" stroke="rgba(245,237,225,0.18)" stroke-width="0.6"/>
+        <circle cx="200" cy="12" r="3" fill="#ff6b5b"/>
+        <line x1="230" y1="12" x2="400" y2="12" stroke="rgba(245,237,225,0.18)" stroke-width="0.6"/>
+      </svg>
+    </div>
+
+    <!-- ════════════════════
+         OUR STORY — CHAPTER REEL with giant numerals
+         ════════════════════ -->
+    <section *ngIf="event.story?.length" class="gr-section fade-up">
+      <div class="golden-card">
+        <p class="gc-eyebrow">Chapter Reel</p>
+        <h2 class="gc-title">How <em>it</em> happened</h2>
+
+        <div class="chapter-reel">
+          <div *ngFor="let s of event.story; let i = index; let odd = odd"
+               class="cr-chapter fst-frame"
+               [class.cr-odd]="odd"
+               [style.animation-delay.ms]="i * 120">
+            <!-- Giant numeral -->
+            <div class="cr-num-wrap">
+              <div class="cr-num">{{ (i + 1) | number:'2.0-0' }}</div>
+              <div class="cr-card" aria-hidden="true">
+                <img class="cr-card-img" [src]="storyImage(i)" alt="">
+              </div>
+            </div>
+            <div class="cr-body">
+              <p class="cr-scene">Scene {{ (i + 1) | number:'2.0-0' }}</p>
+              <h3 class="cr-title">{{ s.title }}</h3>
+              <p class="cr-text">{{ s.description }}</p>
+              <span class="cr-rule"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════════
+         CEREMONY — TICKET STUB
+         ════════════════════ -->
+    <section class="gr-section fade-up">
+      <div class="golden-card ceremony-card">
+        <p class="gc-eyebrow">Admit Two — Save the Date</p>
+        <h2 class="gc-title">When &amp; Where</h2>
+
+        <div class="ticket-stub">
+          <div class="ts-main">
+            <div class="ts-row">
+              <div>
+                <div class="ts-mono">Ceremony No.</div>
+                <div class="ts-mono ts-coral">{{ event.date | date:'ddMM / yyyy' }}</div>
+              </div>
+              <div class="ts-right">
+                <div class="ts-mono">Reel</div>
+                <div class="ts-mono">4:00 PM</div>
+              </div>
+            </div>
+
+            <div class="ts-rule"></div>
+
+            <div class="ts-row ts-bottom">
+              <div>
+                <div class="ts-day">{{ event.date | date:'d' }}<span class="ts-coral">.</span>{{ event.date | date:'MM' }}</div>
+                <div class="ts-mono">{{ event.date | date:'EEEE' }} · Dusk</div>
+              </div>
+              <div class="ts-right">
+                <div class="ts-venue">{{ event.location }}</div>
+                <div class="ts-mono">Join us there</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="ts-perf"></div>
+
+          <div class="ts-side">
+            <div class="ts-side-vert">Afterglow · Take One</div>
+            <div class="ts-side-mono">
+              <div class="ts-amp">{{ (event.groom || 'A')[0] }}&amp;{{ (event.bride || 'B')[0] }}</div>
+              <div class="ts-mono">SEAT · 02</div>
+            </div>
+            <div class="ts-stars">★★★★★</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════════
+         PROGRAMME / SCHEDULE
+         ════════════════════ -->
+    <section *ngIf="event.schedule?.length" class="gr-section fade-up">
+      <div class="golden-card">
+        <p class="gc-eyebrow">Order of the Evening</p>
+        <h2 class="gc-title">Programme</h2>
+
+        <div class="schedule-list">
+          <div *ngFor="let item of event.schedule; let i = index; let last = last"
+               class="sched-item"
+               [style.animation-delay.ms]="i * 80">
+            <span class="si-time">{{ item.time }}</span>
+            <div class="si-node" aria-hidden="true">
+              <div class="sin-dot"></div>
+              <div class="sin-thread" *ngIf="!last"></div>
+            </div>
+            <div class="si-body">
+              <span class="si-name">{{ item.name }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Editorial divider -->
+    <div class="gr-divider fade-up" aria-hidden="true">
+      <svg viewBox="0 0 400 24" fill="none" width="100%">
+        <line x1="0"   y1="12" x2="170" y2="12" stroke="rgba(245,237,225,0.18)" stroke-width="0.6"/>
+        <circle cx="200" cy="12" r="3" fill="#ffb86b"/>
+        <line x1="230" y1="12" x2="400" y2="12" stroke="rgba(245,237,225,0.18)" stroke-width="0.6"/>
+      </svg>
+    </div>
+
+    <!-- ════════════════════
+         GALLERY — POLAROID FAN DECK
+         ════════════════════ -->
+    <section class="gr-section gr-gallery-section fade-up">
+      <p class="gc-eyebrow" style="text-align:center">Contact Sheet</p>
+      <h2 class="gc-title" style="text-align:center">Selected <em>frames</em></h2>
+      <p class="gc-sub" style="text-align:center">Tap a polaroid to bring it forward</p>
+
+      <!-- Fan deck -->
+      <div class="polaroid-deck" *ngIf="galleryImages.length">
+        <button *ngFor="let img of galleryImages.slice(0, 7); let i = index"
+                class="pd-card"
+                [style.transform]="polaroidTransform(i, galleryImages.slice(0,7).length)"
+                [style.zIndex]="polaroidZ(i)"
+                (click)="goToSlide(i); openLightbox(i)"
+                [attr.aria-label]="'Photo ' + (i + 1)">
+          <div class="pd-frame">
+            <img [src]="img" [alt]="'Photo ' + (i + 1)" loading="lazy">
+            <div class="pd-caption">No. {{ (i + 1) | number:'2.0-0' }}</div>
+          </div>
+        </button>
+      </div>
+
+      <!-- Contact-sheet thumbnail strip -->
+      <div class="contact-sheet" *ngIf="galleryImages.length">
+        <button *ngFor="let img of galleryImages; let i = index"
+                class="cs-cell"
+                [class.active]="i === galleryIndex"
+                (click)="openLightbox(i)"
+                [attr.aria-label]="'Open photo ' + (i + 1)">
+          <img [src]="img" [alt]="'Thumb ' + (i + 1)" loading="lazy">
+          <span class="cs-num">{{ (i + 1) | number:'2.0-0' }}</span>
+        </button>
+      </div>
+
+      <!-- Dots -->
+      <div class="eg-nav">
+        <button *ngFor="let d of galleryDots; let i = index"
+                class="egn-dot"
+                [class.active]="i === galleryIndex"
+                (click)="goToSlide(i)"
+                [attr.aria-label]="'Photo ' + (i + 1)"></button>
+      </div>
+    </section>
+
+    <!-- Editorial divider -->
+    <div class="gr-divider fade-up" aria-hidden="true">
+      <svg viewBox="0 0 400 24" fill="none" width="100%">
+        <line x1="0"   y1="12" x2="170" y2="12" stroke="rgba(245,237,225,0.18)" stroke-width="0.6"/>
+        <circle cx="200" cy="12" r="3" fill="#ff6b5b"/>
+        <line x1="230" y1="12" x2="400" y2="12" stroke="rgba(245,237,225,0.18)" stroke-width="0.6"/>
+      </svg>
+    </div>
+
+    <!-- ════════════════════
+         VENUE MAP
+         ════════════════════ -->
+    <section class="gr-section fade-up">
+      <div class="golden-card">
+        <p class="gc-eyebrow">Coordinates</p>
+        <h2 class="gc-title">The Venue</h2>
+        <p class="gc-venue-name">{{ event.location }}</p>
+        <div class="map-wrap">
+          <div class="mw-deco-frame" aria-hidden="true"></div>
+          <iframe [src]="mapUrl" allowfullscreen loading="lazy" title="Wedding venue map"></iframe>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════════
+         RSVP — PROJECTION BOOTH
+         ════════════════════ -->
+    <section class="gr-section fade-up">
+      <p class="gc-eyebrow" style="text-align:center">Take Your Seat</p>
+      <h2 class="gc-title" style="text-align:center">Be <em>there</em></h2>
+
+      <ng-container *ngIf="guest; else noGuestLink">
+        <ng-container *ngIf="!rsvpSubmitted; else rsvpDone">
+          <div class="rsvp-card">
+            <div class="rf-field">
+              <label class="rf-label">Invited Guest</label>
+              <p class="rf-static">{{ guest.name }}</p>
+            </div>
+            <div class="rf-field">
+              <label class="rf-label">Party Size</label>
+              <p class="rf-static">{{ guest.guestCount }} {{ guest.guestCount > 1 ? 'guests' : 'guest' }}</p>
+            </div>
+            <form class="rsvp-form" (submit)="submitRsvp($event)">
+
+              <div class="rf-field">
+                <label class="rf-label">Attendance</label>
+                <select name="attending" class="rf-select" required>
+                  <option value="" disabled selected>Will you attend?</option>
+                  <option value="true">Joyfully — curtain up ✦</option>
+                  <option value="false">Regretfully — sends love</option>
+                </select>
+              </div>
+
+              <div class="rf-field">
+                <label class="rf-label">Leave a Wish (optional)</label>
+                <textarea name="wish" class="rf-input rf-textarea" placeholder="Share your wishes for the couple..." rows="3"></textarea>
+              </div>
+
+              <button type="submit" class="rf-submit">
+                <span class="rfs-inner">
+                  <span class="rfs-label">Send to the projection booth</span>
+                  <span class="rfs-arrow">→</span>
+                </span>
+                <span class="rfs-fill" aria-hidden="true"></span>
+              </button>
+            </form>
+          </div>
+        </ng-container>
+
+        <ng-template #rsvpDone>
+          <div class="rsvp-success">
+            <div class="rs-deco-icon" aria-hidden="true">
+              <svg viewBox="0 0 80 80" width="72">
+                <circle cx="40" cy="40" r="34" fill="none" stroke="rgba(255,184,107,0.35)" stroke-width="0.8"/>
+                <circle cx="40" cy="40" r="22" fill="rgba(255,107,91,0.08)" stroke="rgba(255,107,91,0.5)" stroke-width="0.8"/>
+                <path d="M28 40 L36 48 L54 30"
+                      stroke="rgba(255,184,107,0.95)" stroke-width="2.4"
+                      fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <h3 class="rs-title">{{ guest.attending ? 'Your seat is reserved.' : 'You will be missed.' }}</h3>
+            <p class="rs-body">
+              {{ guest.attending
+                ? "We'll save you a glass for the afterglow."
+                : 'Thank you for letting us know — sending love your way.' }}
+            </p>
+          </div>
+        </ng-template>
+      </ng-container>
+
+      <ng-template #noGuestLink>
+        <div class="rsvp-card">
+          <p class="rf-static" style="text-align:center">
+            Please use the personal invitation link sent to you to RSVP.
+          </p>
+        </div>
+      </ng-template>
+    </section>
+
+    <!-- ════════════════════
+         MEMORY WALL
+         ════════════════════ -->
+    <section class="gr-section fade-up">
+      <p class="gc-eyebrow" style="text-align:center">Leave Your Mark</p>
+      <h2 class="gc-title" style="text-align:center">Memory <em>Wall</em></h2>
+      <p class="gc-sub" style="text-align:center">Share a photo and a wish — it appears here once approved</p>
+
+      <div class="rsvp-card">
+        <ng-container *ngIf="!memoryUploadSuccess; else memoryDone">
+          <form class="rsvp-form" (submit)="submitMemory($event)">
+            <div class="rf-field" *ngIf="!guest">
+              <label class="rf-label">Your Name</label>
+              <input name="guestName" type="text" class="rf-input" placeholder="Your name" required>
+            </div>
+
+            <div class="rf-field">
+              <label class="rf-label">Message (optional)</label>
+              <textarea name="message" class="rf-input rf-textarea" placeholder="Share a wish or memory..." rows="3"></textarea>
+            </div>
+
+            <div class="rf-field">
+              <label class="rf-label">Photo</label>
+              <input name="image" type="file" accept="image/*" class="rf-input" (change)="onMemoryFileSelected($event)" required>
+            </div>
+
+            <button type="submit" class="rf-submit" [disabled]="isUploadingMemory">
+              <span class="rfs-inner">
+                <span class="rfs-label">{{ isUploadingMemory ? 'Uploading…' : 'Share Memory' }}</span>
+                <span class="rfs-arrow">→</span>
+              </span>
+              <span class="rfs-fill" aria-hidden="true"></span>
+            </button>
+          </form>
+        </ng-container>
+
+        <ng-template #memoryDone>
+          <div class="rsvp-success">
+            <h3 class="rs-title">Thank you!</h3>
+            <p class="rs-body">Your memory has been submitted and will appear here once approved.</p>
+          </div>
+        </ng-template>
+      </div>
+
+      <div class="memory-grid" *ngIf="memories.length">
+        <div class="memory-card" *ngFor="let m of memories">
+          <img [src]="m.imageUrl" [alt]="m.guestName" loading="lazy">
+          <div class="memory-overlay">
+            <p class="memory-name">{{ m.guestName }}</p>
+            <p class="memory-message" *ngIf="m.message">{{ m.message }}</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════════
+         FOOTER
+         ════════════════════ -->
+    <footer class="gr-footer">
+      <div class="grf-star" aria-hidden="true">
+        <svg viewBox="0 0 40 40" width="32">
+          <circle cx="20" cy="20" r="14" fill="none" stroke="rgba(255,184,107,0.45)" stroke-width="0.8"/>
+          <circle cx="20" cy="20" r="5" fill="rgba(255,107,91,0.6)"/>
+        </svg>
+      </div>
+
+      <h2 class="grf-names">{{ event.groom }} <span class="grf-amp">&amp;</span> {{ event.bride }}</h2>
+      <p class="grf-date">{{ event.date | date:'d MMMM yyyy' }}</p>
+      <p class="grf-loc">{{ event.location }}</p>
+
+      <div class="grf-rule" aria-hidden="true">
+        <div class="grfr-line"></div>
+        <span class="grfr-diamond">✦</span>
+        <div class="grfr-line"></div>
+      </div>
+
+      <p class="grf-blessing">Roll out · Reel ends · with love</p>
+      <p class="grf-contact">Powered by Linkora · 070 217 4799</p>
+    </footer>
+
+    <!-- ════════════════════
+         LIGHTBOX
+         ════════════════════ -->
+    <div *ngIf="showLightbox"
+         class="lb-overlay"
+         (click)="closeLightbox($event)"
+         role="dialog" aria-modal="true" aria-label="Photo viewer">
+      <button class="lb-close" (click)="closeLightbox()" aria-label="Close">✕</button>
+      <div class="lb-stage" (click)="$event.stopPropagation()">
+        <div class="lb-deco-frame" aria-hidden="true"></div>
+        <img [src]="currentImage" class="lb-img" alt="Wedding photo">
+        <button class="lb-nav lb-prev" (click)="prevLightbox()" aria-label="Previous">‹</button>
+        <button class="lb-nav lb-next" (click)="nextLightbox()" aria-label="Next">›</button>
+      </div>
+      <div class="lb-counter" aria-live="polite">{{ currentIndex + 1 }} / {{ event.gallery?.length }}</div>
+    </div>
+
+  </div><!-- end golden-reveal -->
+
+</ng-container>

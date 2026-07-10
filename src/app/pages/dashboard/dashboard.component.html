@@ -1,0 +1,174 @@
+<div class="dashboard">
+
+  <!-- HERO HEADER -->
+  <div class="hero">
+    <div class="overlay"></div>
+    <h1 class="title">
+      {{ event?.groom }} <span class="heart">❤️</span> {{ event?.bride }}
+    </h1>
+    <p class="subtitle">Wedding Guest Dashboard</p>
+  </div>
+
+  <div *ngIf="isLoading" class="loading">
+    <div class="spinner"></div>
+    <p>Crafting your special day...</p>
+  </div>
+
+  <div *ngIf="!isLoading" class="content">
+
+    <!-- ADD GUEST -->
+    <div class="add-guest-card">
+      <h2>Add Guest</h2>
+      <form class="add-guest-form" (submit)="$event.preventDefault(); addGuest()">
+        <input type="text"
+               name="newGuestName"
+               placeholder="Guest name"
+               class="search-input"
+               [(ngModel)]="newGuestName"
+               required>
+        <input type="number"
+               name="newGuestCount"
+               min="1"
+               placeholder="Guests"
+               class="search-input guest-count-input"
+               [(ngModel)]="newGuestCount">
+        <button type="submit" class="btn-export" [disabled]="isAddingGuest">
+          <span>➕</span> Add & Generate Link
+        </button>
+      </form>
+    </div>
+
+    <!-- ACTION BUTTON -->
+    <div class="actions">
+      <button (click)="exportToCSV()" class="btn-export">
+        <span>⬇️</span> Export to Excel
+      </button>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats">
+      <div class="card total">
+        <div class="icon">👥</div>
+        <h3>Total Guests</h3>
+        <p class="number">{{ totalGuests }}</p>
+      </div>
+
+      <div class="card yes">
+        <div class="icon">💍</div>
+        <h3>Attending</h3>
+        <p class="number">{{ attendingCount }}</p>
+        <div class="progress-bar">
+          <div class="progress yes"
+               [style.width.%]="totalGuests ? (attendingCount / totalGuests * 100) : 0"></div>
+        </div>
+      </div>
+
+      <div class="card no">
+        <div class="icon">🌿</div>
+        <h3>Not Attending</h3>
+        <p class="number">{{ notAttendingCount }}</p>
+        <div class="progress-bar">
+          <div class="progress no"
+               [style.width.%]="totalGuests ? (notAttendingCount / totalGuests * 100) : 0"></div>
+        </div>
+      </div>
+
+      <div class="card pending">
+        <div class="icon">⏳</div>
+        <h3>Pending</h3>
+        <p class="number">{{ pendingCount }}</p>
+      </div>
+    </div>
+
+    <!-- TABLE CARD -->
+    <div class="table-card">
+      <div class="table-header">
+        <h2>Guest List</h2>
+        <input type="text"
+               placeholder="Search guests by name..."
+               class="search-input"
+               (input)="filterGuests($event)">
+      </div>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Guests</th>
+              <th>Status</th>
+              <th>Wish</th>
+              <th>Invite Link</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let g of filteredGuests">
+              <td class="name">{{ g.name }}</td>
+              <td class="guest-count">{{ g.guestCount || 1 }}</td>
+              <td>
+                <span class="status"
+                      [class.attending]="g.attending === true"
+                      [class.not-attending]="g.attending === false"
+                      [class.pending]="g.attending === null">
+                  {{ g.attending === true ? '✓ Attending' : g.attending === false ? '✕ Not Attending' : '⏳ Pending' }}
+                </span>
+              </td>
+              <td class="wish">{{ g.wish || '—' }}</td>
+              <td>
+                <button (click)="copyLink(g)" class="btn-whatsapp">
+                  <span>🔗</span> {{ copiedGuestId === g._id ? 'Copied!' : 'Copy Link' }}
+                </button>
+              </td>
+              <td>
+                <button (click)="removeGuest(g)" class="btn-delete">
+                  <span>🗑️</span>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- MEMORY WALL MODERATION -->
+    <div class="table-card memory-mod-card">
+      <div class="table-header">
+        <h2>Memory Wall</h2>
+        <div class="memory-tabs">
+          <button class="memory-tab" [class.active]="memoryFilter === 'pending'" (click)="memoryFilter = 'pending'">
+            Pending ({{ pendingMemories.length }})
+          </button>
+          <button class="memory-tab" [class.active]="memoryFilter === 'approved'" (click)="memoryFilter = 'approved'">
+            Approved ({{ approvedMemories.length }})
+          </button>
+        </div>
+      </div>
+
+      <div *ngIf="isMemoriesLoading" class="loading" style="padding:40px 20px">
+        <div class="spinner"></div>
+      </div>
+
+      <div *ngIf="!isMemoriesLoading && !visibleMemories.length" class="memory-empty">
+        No {{ memoryFilter }} memories yet.
+      </div>
+
+      <div *ngIf="!isMemoriesLoading && visibleMemories.length" class="memory-mod-grid">
+        <div class="memory-mod-item" *ngFor="let m of visibleMemories">
+          <img [src]="m.imageUrl" [alt]="m.guestName">
+          <div class="memory-mod-info">
+            <p class="memory-mod-name">{{ m.guestName }}</p>
+            <p class="memory-mod-message" *ngIf="m.message">{{ m.message }}</p>
+            <div class="memory-mod-actions">
+              <button *ngIf="m.status === 'pending'" (click)="approveMemory(m)" class="btn-approve">
+                ✓ Approve
+              </button>
+              <button (click)="deleteMemory(m)" class="btn-delete">🗑️</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

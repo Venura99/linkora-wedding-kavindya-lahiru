@@ -1,0 +1,203 @@
+<div class="min-h-screen bg-gradient-to-br from-zinc-950 to-black text-white p-6">
+  
+  <!-- HEADER -->
+  <div class="flex items-center justify-between mb-10">
+    <div>
+      <h1 class="text-4xl font-light tracking-widest text-amber-400">ADMIN PANEL</h1>
+      <p class="text-zinc-500 mt-1">Wedding Event Management</p>
+    </div>
+    
+    <button (click)="newEvent()"
+            class="flex items-center gap-3 bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-black font-semibold px-8 py-3 rounded-2xl transition-all duration-300 shadow-lg shadow-amber-500/30 hover:shadow-xl">
+      <span class="text-2xl">+</span>
+      <span>Create New Event</span>
+    </button>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+
+    <!-- EVENTS LIST -->
+    <div class="lg:col-span-5 xl:col-span-4">
+      <h2 class="text-xl font-semibold mb-6 flex items-center gap-3">
+        <span class="text-amber-400">✦</span>
+        All Events
+      </h2>
+
+      <div class="space-y-4 max-h-[calc(100vh-180px)] overflow-auto pr-2 custom-scrollbar">
+        <div *ngFor="let e of events"
+             class="group bg-zinc-900/70 border border-zinc-800 hover:border-amber-400/50 rounded-3xl p-6 transition-all duration-300 hover:scale-[1.02]">
+
+          <div class="flex justify-between items-start">
+            <div>
+              <div class="text-2xl font-light">
+                {{ e.groom }} <span class="text-rose-400">❤️</span> {{ e.bride }}
+              </div>
+              <div class="text-amber-400/70 text-sm mt-1 font-mono">{{ e.slug }}</div>
+            </div>
+
+            <div class="flex gap-2 opacity-80 group-hover:opacity-100 transition-opacity">
+              <button (click)="selectEvent(e)"
+                      class="bg-zinc-800 hover:bg-blue-600 text-white px-5 py-2.5 rounded-2xl text-sm font-medium transition-all">
+                Edit
+              </button>
+              
+              <a [href]="'/event/' + e.slug"
+                 target="_blank"
+                 class="bg-gradient-to-r from-amber-400 to-yellow-400 hover:from-amber-500 hover:to-yellow-500 text-black px-5 py-2.5 rounded-2xl text-sm font-semibold transition-all">
+                View Live
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FORM -->
+    <div class="lg:col-span-7 xl:col-span-8">
+      <div class="bg-zinc-900 border border-zinc-700 rounded-3xl p-8 shadow-2xl">
+
+        <h2 class="text-3xl font-light mb-8 text-amber-400 flex items-center gap-3">
+          {{ selectedEvent ? '✍️ Edit Event' : '✨ Create New Event' }}
+        </h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Basic Info -->
+          <div class="md:col-span-2">
+            <label class="block text-amber-400 text-sm mb-2">Event Slug</label>
+            <input [(ngModel)]="form.slug" 
+                   placeholder="e.g. kasun-wedding-2026"
+                   class="input-modern" />
+          </div>
+
+          <div>
+            <label class="block text-amber-400 text-sm mb-2">Wedding Date</label>
+            <input [(ngModel)]="form.date" type="date" class="input-modern" />
+          </div>
+
+          <div>
+            <label class="block text-amber-400 text-sm mb-2">Location</label>
+            <input [(ngModel)]="form.location" placeholder="Venue name & city" class="input-modern" />
+          </div>
+
+          <!-- Couple -->
+          <div>
+            <label class="block text-amber-400 text-sm mb-2">Groom's Name</label>
+            <input [(ngModel)]="form.groom" placeholder="Groom's full name" class="input-modern" />
+          </div>
+          <div>
+            <label class="block text-amber-400 text-sm mb-2">Bride's Name</label>
+            <input [(ngModel)]="form.bride" placeholder="Bride's full name" class="input-modern" />
+          </div>
+
+          <!-- Parents -->
+          <div>
+            <label class="block text-amber-400 text-sm mb-2">Groom's Parents</label>
+            <input [(ngModel)]="form.parents.groom" 
+                   placeholder="Mr. & Mrs. ..." 
+                   class="input-modern" />
+          </div>
+          <div>
+            <label class="block text-amber-400 text-sm mb-2">Bride's Parents</label>
+            <input [(ngModel)]="form.parents.bride" 
+                   placeholder="Mr. & Mrs. ..." 
+                   class="input-modern" />
+          </div>
+        </div>
+
+        <!-- Gallery -->
+        <div class="mt-10">
+          <h3 class="text-xl text-amber-400 mb-4 flex items-center gap-2">
+            📸 Gallery
+          </h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div *ngFor="let img of form.gallery; let i = index" 
+                 class="flex gap-3 bg-zinc-950 border border-zinc-800 rounded-2xl p-2">
+              <input [(ngModel)]="form.gallery[i]" 
+                     placeholder="https://image-url.jpg" 
+                     class="input-modern flex-1" />
+              <button (click)="removeImage(i)" 
+                      class="bg-red-500/10 hover:bg-red-500/20 text-red-400 px-4 rounded-2xl transition-colors">
+                ✕
+              </button>
+            </div>
+          </div>
+          <button (click)="addImage()" 
+                  class="mt-4 text-amber-400 hover:text-amber-300 flex items-center gap-2 text-sm font-medium">
+            <span class="text-xl">+</span> Add Image URL
+          </button>
+        </div>
+
+        <!-- Story -->
+        <div class="mt-10">
+          <h3 class="text-xl text-amber-400 mb-4">💕 Our Story</h3>
+          <div *ngFor="let s of form.story; let i = index" class="mb-6 bg-zinc-950 border border-zinc-800 rounded-3xl p-6">
+            <input [(ngModel)]="s.title" placeholder="Story Title" class="input-modern mb-3" />
+            <textarea [(ngModel)]="s.description" 
+                      rows="3"
+                      placeholder="Write the story..." 
+                      class="input-modern"></textarea>
+            <button (click)="removeStory(i)" 
+                    class="text-red-400 text-sm mt-3 hover:text-red-500">Remove Story</button>
+          </div>
+          <button (click)="addStory()" 
+                  class="text-amber-400 hover:text-amber-300 flex items-center gap-2 text-sm font-medium">
+            <span class="text-xl">+</span> Add Story Section
+          </button>
+        </div>
+
+       <!-- SCHEDULE -->
+<div class="mt-10">
+  <h3 class="text-xl text-amber-400 mb-4 flex items-center gap-2">
+    📅 Schedule
+  </h3>
+
+  <div *ngFor="let s of form.schedule; let i = index" 
+       class="flex flex-col sm:flex-row gap-4 bg-zinc-950 border border-zinc-700 hover:border-zinc-600 rounded-3xl p-6 mb-4 transition-colors">
+
+    <!-- Event Name -->
+    <div class="flex-1">
+      <label class="block text-xs text-zinc-500 mb-1.5">EVENT NAME</label>
+      <input 
+        [(ngModel)]="s.name" 
+        placeholder="Engagement / Poruwa Ceremony"
+        class="w-full bg-zinc-900 border border-zinc-700 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 rounded-2xl px-6 py-4 text-white outline-none transition-all">
+    </div>
+
+    <!-- Time -->
+    <div class="sm:w-56">
+      <label class="block text-xs text-zinc-500 mb-1.5">TIME</label>
+      <input 
+        [(ngModel)]="s.time" 
+        placeholder="4:00 PM"
+        class="w-full bg-zinc-900 border border-zinc-700 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 rounded-2xl px-6 py-4 text-white outline-none transition-all">
+    </div>
+
+    <!-- Remove Button -->
+    <div class="flex items-end sm:pb-1">
+      <button (click)="removeSchedule(i)" 
+              class="bg-red-500/10 hover:bg-red-500/20 text-red-400 hover:text-red-500 px-5 py-4 rounded-2xl transition-all text-xl">
+        ✕
+      </button>
+    </div>
+  </div>
+
+  <!-- Add Button -->
+  <button (click)="addSchedule()" 
+          class="mt-4 flex items-center gap-3 text-amber-400 hover:text-amber-300 transition-colors">
+    <span class="w-8 h-8 flex items-center justify-center border border-amber-400/30 rounded-2xl text-xl hover:bg-amber-400/10">+</span>
+    <span class="font-medium">Add Schedule Item</span>
+  </button>
+</div>
+
+        <!-- SAVE -->
+        <div class="mt-12 flex justify-end">
+          <button (click)="saveEvent()"
+                  class="bg-gradient-to-r from-amber-400 to-yellow-400 hover:from-amber-500 hover:to-yellow-500 text-black font-bold text-lg px-12 py-4 rounded-3xl transition-all duration-300 shadow-lg shadow-amber-500/40">
+            💾 Save Event
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

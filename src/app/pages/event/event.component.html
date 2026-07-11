@@ -158,11 +158,13 @@
         <p class="gh-eyebrow">Together with their families</p>
 
         <div class="gh-names">
-          <h1 class="ghn-name ghn-groom">
-            <span *ngFor="let ch of splitLetters(displayGroom); let i = index"
+
+          <h1 class="ghn-name ghn-bride">
+            <span *ngFor="let ch of splitLetters(displayBride); let i = index"
                   class="ghnl"
-                  [style.animation-delay.s]="0.1 + i * 0.06">{{ ch === ' ' ? '\u00A0' : ch }}</span>
+                  [style.animation-delay.s]="0.6 + i * 0.06">{{ ch === ' ' ? '\u00A0' : ch }}</span>
           </h1>
+          
 
           <div class="ghn-and">
             <span class="ghn-line"></span>
@@ -170,10 +172,10 @@
             <span class="ghn-line"></span>
           </div>
 
-          <h1 class="ghn-name ghn-bride">
-            <span *ngFor="let ch of splitLetters(displayBride); let i = index"
+          <h1 class="ghn-name ghn-groom">
+            <span *ngFor="let ch of splitLetters(displayGroom); let i = index"
                   class="ghnl"
-                  [style.animation-delay.s]="0.6 + i * 0.06">{{ ch === ' ' ? '\u00A0' : ch }}</span>
+                  [style.animation-delay.s]="0.1 + i * 0.06">{{ ch === ' ' ? '\u00A0' : ch }}</span>
           </h1>
         </div>
 
@@ -520,9 +522,9 @@
               <div class="rf-field">
                 <label class="rf-label">Attendance</label>
                 <select name="attending" class="rf-select" required>
-                  <option value="" disabled selected>Will you attend?</option>
-                  <option value="true">Joyfully — curtain up ✦</option>
-                  <option value="false">Regretfully — sends love</option>
+                  <option value="" disabled selected>Please select</option>
+                  <option value="true">Yes, I will attend ✦</option>
+                  <option value="false">Regretfully unable to attend</option>
                 </select>
               </div>
 
@@ -638,7 +640,7 @@
         </svg>
       </div>
 
-      <h2 class="grf-names">{{ event.groom }} <span class="grf-amp">&amp;</span> {{ event.bride }}</h2>
+      <h2 class="grf-names">{{ event.bride }} <span class="grf-amp">&amp;</span> {{ event.groom }}</h2>
       <p class="grf-date">{{ event.date | date:'d MMMM yyyy' }}</p>
       <p class="grf-loc">{{ event.location }}</p>
 

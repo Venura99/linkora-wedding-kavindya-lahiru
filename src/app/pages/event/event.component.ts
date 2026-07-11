@@ -87,10 +87,10 @@ export class EventComponent implements OnInit, OnDestroy, AfterViewInit {
 
   // Chapter Reel — story numeral card images
   readonly STORY_IMAGES = [
-    '/assets/story-images/image1.JPG',
-    '/assets/story-images/image2.JPG',
-    '/assets/story-images/image3.JPG',
-    '/assets/story-images/image4.JPG',
+    '/assets/story-images/image1.jpg',
+    '/assets/story-images/image2.jpeg',
+    '/assets/story-images/image3.jpg',
+    '/assets/story-images/image4.jpeg',
   ];
   storyImage(i: number): string {
     return this.STORY_IMAGES[i % this.STORY_IMAGES.length];
